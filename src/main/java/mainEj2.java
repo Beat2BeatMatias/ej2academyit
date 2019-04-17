@@ -1,12 +1,13 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 import static spark.Spark.*;
 
@@ -14,10 +15,10 @@ public class mainEj2 {
 
     public static void main(String[] args) {
 
+        Logger logger=Logger.getLogger("Mi logger");
         String url_base = "https://api.mercadolibre.com/";
 
         get("/agencias/sites/:sites_id/payment_methods/:payment_method_id/order/:order/agencies",(request,response)-> {
-
             response.type("application/json");
             String sites_id = request.params("sites_id");
             String paymentMethodId = request.params("payment_method_id");
@@ -44,6 +45,7 @@ public class mainEj2 {
                     break;
             }
 
+            guardarLog(request.url());
 
             if(limit != null){
                 if(offset!=null) {
@@ -70,9 +72,35 @@ public class mainEj2 {
                 //return new Gson().toJson(new StandarResponse(StatusResponse.SUCCESS, obtenerAgencies(url_base + "sites/" + sites_id + "/payment_methods/" + paymentMethodId + "/agencies?near_to=" + coordenadas)));
             }
         });
-
-
     }
+
+    private static void guardarLog(String url) {
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        Date date= Calendar.getInstance().getTime();
+        String time = date.toString();
+        try
+        {
+            fichero = new FileWriter("/Users/mfariasfalki/IdeaProjects/ej2academyit/log.txt");
+            pw = new PrintWriter(fichero);
+
+            pw.println("Fecha: " + time);
+            pw.println("Url: " + url);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                // Nuevamente aprovechamos el finally para
+                // asegurarnos que se cierra el fichero.
+                if (null != fichero)
+                    fichero.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
     private static void comprobacionParametros(String coordenadas, String payment, String sites_id, String order) throws ParametrosException{
         if (coordenadas == null || payment == null || sites_id == null || order == null){
             throw new ParametrosException("Debe colocar los parámetros obligatorios: 'sites_id', 'payment_method_id' y 'near_to'");
