@@ -1,6 +1,11 @@
 import java.util.Collection;
+import java.util.HashMap;
 
-public class AgencyServiceMapImpl {
+public class AgencyServiceMapImpl implements AgencyService{
 
-    //public static <T extends Comparable<T>>
+    @Override
+    public Collection<Agency> getAgencies() {
+
+        return null;
+    }
 }

@@ -1,5 +1,12 @@
-public class Agency {
+public class Agency implements Comparable<Agency>{
 
+    public enum Criterio{
+        ADDRESS_LINE,
+        AGENCY_CODE,
+        DISTANCE,
+    }
+
+    public static Criterio criterio=Criterio.ADDRESS_LINE;
     private Address address;
     private String agency_code;
     private String correspondent_id;
@@ -11,6 +18,7 @@ public class Agency {
     private String phone;
     private String site_id;
     private String terminal;
+
 
     public Agency (){
 
@@ -133,5 +141,27 @@ public class Agency {
                 ", site_id='" + site_id + '\'' +
                 ", terminal='" + terminal + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Agency o) {
+        switch (criterio){
+            case ADDRESS_LINE:
+                return this.getAddress().getAdress_line().compareTo(o.getAddress().getAdress_line());
+            case AGENCY_CODE:
+                return this.agency_code.compareTo(o.agency_code);
+            case DISTANCE:
+                double distanciaThis = Double.parseDouble(this.distance);
+                double distanciaThat = Double.parseDouble(o.distance);
+                if (distanciaThis > distanciaThat){
+                    return 1;
+                }else if (distanciaThis < distanciaThat){
+                    return -1;
+                }else {
+                    return 0;
+                }
+            default:
+                return 0;
+        }
     }
 }
