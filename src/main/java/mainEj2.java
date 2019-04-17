@@ -81,7 +81,7 @@ public class mainEj2 {
         String time = date.toString();
         try
         {
-            fichero = new FileWriter("/Users/mfariasfalki/IdeaProjects/ej2academyit/log.txt");
+            fichero = new FileWriter("/Users/mfariasfalki/IdeaProjects/ej2academyit/log.log");
             pw = new PrintWriter(fichero);
 
             pw.println("Fecha: " + time);
