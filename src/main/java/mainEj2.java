@@ -45,7 +45,7 @@ public class mainEj2 {
                     break;
             }
 
-            guardarLog(request.url());
+            guardarLog(request.url() + "?" + request.queryString());
 
             if(limit != null){
                 if(offset!=null) {
