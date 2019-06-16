@@ -1,3 +1,6 @@
+import javax.persistence.Entity;
+
+
 public class Address {
 
     private String address_line;

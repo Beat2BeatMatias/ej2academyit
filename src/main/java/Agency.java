@@ -1,4 +1,19 @@
+import javax.persistence.*;
+
+
 public class Agency implements Comparable<Agency>{
+
+    private String id;
+    private Address address;
+    private String agency_code;
+    private String correspondent_id;
+    private String description;
+    private String disabled;
+    private String distance;
+    private String payment_method_id;
+    private String phone;
+    private String site_id;
+    private String terminal;
 
     public enum Criterio{
         ADDRESS_LINE,
@@ -7,17 +22,6 @@ public class Agency implements Comparable<Agency>{
     }
 
     public static Criterio criterio=Criterio.ADDRESS_LINE;
-    private Address address;
-    private String agency_code;
-    private String correspondent_id;
-    private String description;
-    private String disabled;
-    private String distance;
-    private String id;
-    private String payment_method_id;
-    private String phone;
-    private String site_id;
-    private String terminal;
 
 
     public Agency (){

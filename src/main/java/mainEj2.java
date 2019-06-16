@@ -1,6 +1,11 @@
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityManager;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
@@ -11,14 +16,23 @@ import java.util.logging.Logger;
 
 import static spark.Spark.*;
 
+@RestController
 public class mainEj2 {
 
+    @Autowired
+    private static AgencyRepository agencyRepository;
+
     public static void main(String[] args) {
+
+        SessionFactory sf = new Configuration().configure().buildSessionFactory();
 
         Logger logger=Logger.getLogger("Mi logger");
         String url_base = "https://api.mercadolibre.com/";
 
         get("/agencias/sites/:sites_id/payment_methods/:payment_method_id/order/:order/agencies",(request,response)-> {
+
+            EntityManager session = sf.createEntityManager();
+
             response.type("application/json");
             String sites_id = request.params("sites_id");
             String paymentMethodId = request.params("payment_method_id");
@@ -26,7 +40,6 @@ public class mainEj2 {
             String coordenadas = request.queryParams("near_to");
             String limit = request.queryParams("limit");
             String offset = request.queryParams("offset");
-
             try {
                 comprobacionParametros(coordenadas, paymentMethodId, sites_id, order);
             }catch (ParametrosException e){
@@ -65,6 +78,16 @@ public class mainEj2 {
                         "/payment_methods/" + paymentMethodId +
                         "/agencies?near_to=" + coordenadas + "&offset=" + offset),Agency[].class)))));
             }else {
+                Agency agency = new Gson().fromJson(obtenerAgencies(url_base +
+                        "sites/" + sites_id +
+                        "/payment_methods/" + paymentMethodId +
+                        "/agencies?near_to=" + coordenadas),Agency[].class)[0];
+                Casa casa=new Casa();
+                casa.setPuertas(2);
+                session.getTransaction().begin();
+                session.persist(casa);
+                session.getTransaction().commit();
+                session.close();
                 return new Gson().toJson(new StandarResponse(StatusResponse.SUCCESS,new Gson().toJsonTree(Ordenador.ordenarArray(new Gson().fromJson(obtenerAgencies(url_base +
                         "sites/" + sites_id +
                         "/payment_methods/" + paymentMethodId +
